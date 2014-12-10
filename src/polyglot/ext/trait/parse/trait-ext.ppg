@@ -22,13 +22,13 @@ type_declaration ::= trait_declaration:a
     ;
 
 extend
-class_member_declaration ::= USE IDENTIFIER:b
-            {: RESULT = b; :}
+class_member_declaration ::= USE IDENTIFIER:n
+            {: RESULT = n; :}
     ;
 
 trait_declaration ::=
-        TRAIT:n IDENTIFIER:b LBRACE:d require_method:a provided_method_c RBRACE:e
-            {: RESULT = parser.nf.ClassDecl(parser.pos(d, e), a); :}
+        TRAIT IDENTIFIER:n LBRACE:d require_method:a provided_method_c RBRACE:e
+            {: RESULT = null; :}
     ;
 
 require_method ::=
@@ -40,7 +40,7 @@ require_method ::=
 provided_method ::=
                     //MethodDecl ??
         trait_method_modifier:b method_header:a block:c
-            {: RESULT = parser.nf.MethodDecl(parser.pos(b, c), a); :}
+            {: RESULT = null; :}
     ;
 
 trait_method_modifier ::=
