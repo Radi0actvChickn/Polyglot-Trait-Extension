@@ -1,3 +1,5 @@
+package polyglot.ext.trait.parse;
+
 include "java12.cup"
 
 import polyglot.parse.*;
