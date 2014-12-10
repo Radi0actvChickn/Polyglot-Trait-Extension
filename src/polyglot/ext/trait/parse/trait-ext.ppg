@@ -1,0 +1,51 @@
+include "java12.cup"
+
+import polyglot.parse.*;
+
+parser Grm extends polyglot.parse.Grm  {:
+:};
+
+terminal REQUIRES, TRAIT, USE;
+
+non terminal ClassDecl trait_declaration;
+non terminal require_method;
+non terminal provided_method;
+non terminal trait_method_modifier;
+
+start with goal;
+  
+extend
+type_declaration ::= trait_declaration:a
+            {: RESULT = a; :}
+    ;
+
+extend
+class_member_declaration ::= USE IDENTIFIER:b
+            {: RESULT = b; :}
+    ;
+
+trait_declaration ::=
+        TRAIT:n IDENTIFIER:b LBRACE:d require_method:a provided_method_c RBRACE:e
+            {: RESULT = parser.nf.ClassDecl(parser.pos(d, e), a); :}
+    ;
+
+require_method ::=
+                    //MethodDecl ??
+        REQUIRES method_header:a
+            {: RESULT = a; :}
+    ;
+
+provided_method ::=
+                    //MethodDecl ??
+        trait_method_modifier:b method_header:a block:c
+            {: RESULT = parser.nf.MethodDecl(parser.pos(b, c), a); :}
+    ;
+
+trait_method_modifier ::=
+                    //Flags
+            {: RESULT = Flags.NONE; :}
+    |   PUBLIC
+            {: RESULT = Flags.PUBLIC; :}
+    |   PRIVATE
+            {: RESULT = Flags.PRIVATE; :}
+    ;
