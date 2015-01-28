@@ -9,7 +9,7 @@ parser Grm extends polyglot.parse.Grm  {:
 
 terminal REQUIRES, TRAIT, USE;
 
-non terminal ClassDecl trait_declaration;
+non terminal TraitDecl trait_declaration;
 non terminal require_method;
 non terminal provided_method;
 non terminal trait_method_modifier;
@@ -22,13 +22,13 @@ type_declaration ::= trait_declaration:a
     ;
 
 extend
-class_member_declaration ::= USE IDENTIFIER:n
-            {: RESULT = n; :}
+class_member_declaration ::= USE IDENTIFIER:b
+            {: RESULT = b; :}
     ;
 
 trait_declaration ::=
-        TRAIT IDENTIFIER:n LBRACE:d require_method:a provided_method_c RBRACE:e
-            {: RESULT = null; :}
+        TRAIT:n IDENTIFIER:b LBRACE:d require_method:a provided_method_c RBRACE:e
+            {: RESULT = parser.nf.TraitDecl(parser.pos(n, e)); :}
     ;
 
 require_method ::=
@@ -40,7 +40,7 @@ require_method ::=
 provided_method ::=
                     //MethodDecl ??
         trait_method_modifier:b method_header:a block:c
-            {: RESULT = null; :}
+            {: RESULT = parser.nf.MethodDecl(parser.pos(b, c), a); :}
     ;
 
 trait_method_modifier ::=
