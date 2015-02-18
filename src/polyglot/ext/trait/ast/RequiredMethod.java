@@ -1,7 +1,9 @@
 package polyglot.ext.trait.ast;
 
-import polyglot.types.MethodInstance;
+import polyglot.ast.MethodDecl;
 
-public interface RequiredMethod extends MethodInstance {
-
+public interface RequiredMethod extends MethodDecl {
+    /*
+     * Only exists for clearer references
+     */
 }
