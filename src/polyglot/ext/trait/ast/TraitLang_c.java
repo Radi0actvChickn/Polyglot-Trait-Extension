@@ -46,6 +46,7 @@ import polyglot.types.TypeSystem;
 import polyglot.util.InternalCompilerError;
 import polyglot.util.SubtypeSet;
 
+//TODO: finish this class
 public class TraitLang_c extends J5Lang_c implements J7Lang {
     public static final TraitLang_c instance = new TraitLang_c();
 

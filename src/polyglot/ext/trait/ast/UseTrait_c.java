@@ -10,6 +10,7 @@ import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.util.SubtypeSet;
 
+//TODO: this class
 public class UseTrait_c extends Node_c implements UseTrait {
 
     private static final long serialVersionUID = SerialVersionUID.generate();

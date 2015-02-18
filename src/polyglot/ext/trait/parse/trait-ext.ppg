@@ -85,7 +85,8 @@ type_declaration ::= trait_declaration:a
 
 extend
 class_member_declaration ::= USE:a TRAIT IDENTIFIER:b
-            {: RESULT = parser.nf.UseTrait(parser.pos(a, b), b); :}
+				//Figure out how to reference the host class
+            {: RESULT = parser.nf.UseTrait(parser.pos(a, b), b); :} //will throw an error
     ;
 
 trait_declaration ::=

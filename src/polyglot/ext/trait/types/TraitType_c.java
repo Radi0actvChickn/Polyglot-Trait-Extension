@@ -19,6 +19,7 @@ import polyglot.types.TypeSystem;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 
+//TODO: finish this class
 public abstract class TraitType_c extends ClassType_c implements TraitType {
     private static final long serialVersionUID = SerialVersionUID.generate();
 
