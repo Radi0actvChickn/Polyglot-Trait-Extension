@@ -13,17 +13,17 @@
  * This program and the accompanying materials are made available under
  * the terms of the Lesser GNU Public License v2.0 which accompanies this
  * distribution.
- * 
+ *
  * The development of the Polyglot project has been supported by a
  * number of funding sources, including DARPA Contract F30602-99-1-0533,
  * monitored by USAF Rome Laboratory, ONR Grants N00014-01-1-0968 and
  * N00014-09-1-0652, NSF Grants CNS-0208642, CNS-0430161, CCF-0133302,
- * and CCF-1054172, AFRL Contract FA8650-10-C-7022, an Alfred P. Sloan 
+ * and CCF-1054172, AFRL Contract FA8650-10-C-7022, an Alfred P. Sloan
  * Research Fellowship, and an Intel Research Ph.D. Fellowship.
  *
  * See README for contributors.
  ******************************************************************************/
-package polyglot.ext.jl7.ast;
+package polyglot.ext.trait.ast;
 
 import polyglot.ast.Block;
 import polyglot.ast.Case;
@@ -39,12 +39,15 @@ import polyglot.ast.Try;
 import polyglot.ext.jl5.ast.J5Lang_c;
 import polyglot.ext.jl5.ast.JL5CaseOps;
 import polyglot.ext.jl5.ast.JL5SwitchOps;
+import polyglot.ext.jl7.ast.J7Lang;
+import polyglot.ext.jl7.ast.JL7Ext;
+import polyglot.ext.jl7.ast.JL7TryOps;
 import polyglot.types.TypeSystem;
 import polyglot.util.InternalCompilerError;
 import polyglot.util.SubtypeSet;
 
-public class J7Lang_c extends J5Lang_c implements J7Lang {
-    public static final J7Lang_c instance = new J7Lang_c();
+public class TraitLang_c extends J5Lang_c implements J7Lang {
+    public static final TraitLang_c instance = new TraitLang_c();
 
     public static J7Lang lang(NodeOps n) {
         while (n != null) {
@@ -57,7 +60,7 @@ public class J7Lang_c extends J5Lang_c implements J7Lang {
         throw new InternalCompilerError("Impossible to reach");
     }
 
-    protected J7Lang_c() {
+    protected TraitLang_c() {
     }
 
     protected static JL7Ext jl7ext(Node n) {

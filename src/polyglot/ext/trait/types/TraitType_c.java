@@ -54,28 +54,16 @@ public abstract class TraitType_c extends ClassType_c implements TraitType {
     }
 
     @Override
-    public boolean inStaticContext() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public void setFlags(Flags flags) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setContainer(ReferenceType container) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public abstract Job job();
 
+    /*
+     * (non-Javadoc) Traits can only be top-level declarations
+     * @see polyglot.types.ClassType_c#kind()
+     */
     @Override
-    public abstract Kind kind();
+    public Kind kind() {
+        return TOP_LEVEL;
+    };
 
     @Override
     public abstract TraitType outer();
@@ -85,17 +73,17 @@ public abstract class TraitType_c extends ClassType_c implements TraitType {
 
     @Override
     public boolean isTopLevel() {
-        return kind() == TOP_LEVEL;
+        return true;
     }
 
     @Override
     public boolean isLocal() {
-        return kind() == LOCAL;
+        return false;
     }
 
     @Override
     public boolean isAnonymous() {
-        return kind() == ANONYMOUS;
+        return false;
     }
 
     @Override
@@ -118,24 +106,58 @@ public abstract class TraitType_c extends ClassType_c implements TraitType {
     @Override
     public abstract Flags flags();
 
+    /*
+     * (non-Javadoc) There are no constructors for a trait
+     * @see polyglot.types.ClassType_c#constructors()
+     */
     @Override
-    public abstract List<? extends ConstructorInstance> constructors();
+    public List<? extends ConstructorInstance> constructors() {
+        return null;
+    };
 
+    /*
+     * (non-Javadoc) There can be no classes declared in a trait
+     * @see polyglot.types.ClassType_c#memberClasses()
+     */
     @Override
-    public abstract List<? extends ClassType> memberClasses();
+    public List<? extends ClassType> memberClasses() {
+        return null;
+    };
 
     @Override
     public abstract List<? extends MethodInstance> methods();
 
+    /*
+     * (non-Javadoc) There can be no fields declared in a trait
+     * @see polyglot.types.ClassType_c#fields()
+     */
     @Override
-    public abstract List<? extends FieldInstance> fields();
+    public List<? extends FieldInstance> fields() {
+        return null;
+    };
 
+    /*
+     * (non-Javadoc) There can be no interfaces implemented in a Trait
+     * @see polyglot.types.ClassType_c#interfaces()
+     */
     @Override
-    public abstract List<? extends ReferenceType> interfaces();
+    public List<? extends ReferenceType> interfaces() {
+        return null;
+    };
 
+    /*
+     * (non-Javadoc) There can be no superTypes of Traits
+     * @see polyglot.types.ClassType_c#superType()
+     */
     @Override
-    public abstract Type superType();
+    public Type superType() {
+        return null;
+    };
 
+    /*
+     * (non-Javadoc) TODO: Check this
+     * @see polyglot.types.ClassType_c#members()
+     */
     @Override
     public List<? extends MemberInstance> members() {
         List<MemberInstance> l = new LinkedList<>();

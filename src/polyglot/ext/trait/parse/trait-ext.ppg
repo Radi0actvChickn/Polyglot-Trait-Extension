@@ -1,18 +1,80 @@
-package polyglot.ext.trait.parse;
-
 include "java12.cup"
 
+package polyglot.ext.trait.parse;
+
+import java.util.*;
+
 import polyglot.parse.*;
+import polyglot.ext.trait.ast.*;
+import polyglot.ast.*;
+import polyglot.lex.*;
+import polyglot.util.*;
+import polyglot.types.*;
+import polyglot.ast.Assert;
+import polyglot.main.Options;
 
 parser Grm extends polyglot.parse.Grm  {:
+
+  public Grm(Lexer l, TypeSystem t, NodeFactory n, ErrorQueue q) {
+    super(l,t,n,q);
+  }
+
+  /**
+   * Override the default CUP routine.
+   */
+  @Override
+  public void syntax_error(java_cup.runtime.Symbol current)
+  {
+    Position p = ((Token) current.value).getPosition ();
+    report_error ("Syntax error: unexpected " + current.value + ".", p);
+  }
+
+  /**
+   * Override the default CUP routine.
+   */
+  @Override
+  public void report_error(String message, Object info)
+  {
+    if (info instanceof Position)
+	eq.enqueue (ErrorInfo.SYNTAX_ERROR, message, (Position) info);
+    else
+	eq.enqueue (ErrorInfo.SYNTAX_ERROR, message);
+  }
+
+  @Override
+  protected Position posForObject(Object o) {
+      if (o instanceof Name) {
+          return pos ((Name) o);
+      }
+      return super.posForObject(o);
+  }
+
+  public Position pos(Name n) {
+    if (n == null) return null;
+    else return n.pos;
+  }
+
+  public List<LocalDecl> variableDeclarators(TypeNode a, List<VarDeclarator> b, Flags flags)
+    throws Exception
+  {
+    List<LocalDecl> l = new LinkedList<>();
+    for (VarDeclarator d : b) {
+	l.add(nf.LocalDecl(pos(d), flags, array(a, d.dims),
+				  d.name, d.init));
+    }
+    return l;
+  }
+	
 :};
 
 terminal REQUIRES, TRAIT, USE;
 
+non terminal required_methods_opt;
 non terminal TraitDecl trait_declaration;
-non terminal require_method;
-non terminal provided_method;
-non terminal trait_method_modifier;
+non terminal List<RequiredMethod> required_methods;
+non terminal RequiredMethod required_method, required_method_header;
+non terminal List<MethodDecl> provided_methods;
+non terminal Flags trait_method_modifier;
 
 start with goal;
   
@@ -22,32 +84,62 @@ type_declaration ::= trait_declaration:a
     ;
 
 extend
-class_member_declaration ::= USE IDENTIFIER:b
-            {: RESULT = b; :}
+class_member_declaration ::= USE:a TRAIT IDENTIFIER:b
+            {: RESULT = parser.nf.UseTrait(parser.pos(a, b), b); :}
     ;
 
 trait_declaration ::=
-        TRAIT:n IDENTIFIER:b LBRACE:d require_method:a provided_method_c RBRACE:e
-            {: RESULT = parser.nf.TraitDecl(parser.pos(n, e)); :}
+        TRAIT:n IDENTIFIER:b LBRACE:d required_methods_opt:a provided_methods:c RBRACE:e
+            {: RESULT = parser.nf.TraitDecl(parser.pos(n, e), b, a, c); :}
     ;
 
-require_method ::=
-                    //MethodDecl ??
-        REQUIRES method_header:a
-            {: RESULT = a; :}
+required_methods_opt ::=
+                    //List of RequiredMethod
+            {: RESULT = new List<RequiredMethod>(); :}
+    |	required_methods:a
+        	{: RESULT = a; :}
+    ;
+	
+required_methods ::=
+					//List of RequiredMethod
+		required_method:a
+			{: RESULT = a :}
+	|	required_methods:a required_method:b
+			{: RESULT = a;
+			   a.addAll(b); :}
+	;
+	
+required_method ::=
+					//RequiredMethod
+		REQUIRES required_method_header:a
+			{: RESULT = a; :}
+	;
+	
+required_method_header ::=
+					//RequiredMethod
+		trait_method_modifier:a type:b IDENTIFIER:c LPAREN
+                formal_parameter_list_opt:d RPAREN:g dims_opt:e throws_opt:f
+            {: RESULT = parser.nf.RequiredMethod(parser.pos(b, g, c), a,
+                parser.array(b, e.intValue()), parser.nf.Id(parser.pos(c), c.getIdentifier()),
+                d, f); :}
     ;
 
-provided_method ::=
-                    //MethodDecl ??
-        trait_method_modifier:b method_header:a block:c
-            {: RESULT = parser.nf.MethodDecl(parser.pos(b, c), a); :}
-    ;
-
+provided_methods ::=
+					//List of MethodDecl
+		method_declaration:a
+			{: RESULT = a; :}
+	|	provided_methods:a method_declaration:b
+			{: RESULT = a;
+			   a.addAll(b); :}
+	;
+	
 trait_method_modifier ::=
-                    //Flags
-            {: RESULT = Flags.NONE; :}
-    |   PUBLIC
-            {: RESULT = Flags.PUBLIC; :}
-    |   PRIVATE
-            {: RESULT = Flags.PRIVATE; :}
-    ;
+					//Flags
+		NONE
+			{: RESULT = Flags.NONE; :}
+	|	PRIVATE
+			{: RESULT = Flags.PRIVATE; :}
+	|	PUBLIC
+			{: RESULT = Flags.PUBLIC; :}
+	;
+
