@@ -7,7 +7,6 @@ import polyglot.ast.Id;
 import polyglot.ast.MethodDecl;
 import polyglot.ast.NodeFactory;
 import polyglot.ast.TypeNode;
-import polyglot.types.ClassType;
 import polyglot.types.Flags;
 import polyglot.util.Position;
 
@@ -21,5 +20,5 @@ public interface TraitNodeFactory extends NodeFactory {
             List<RequiredMethod> requiredMethods,
             List<MethodDecl> providedMethods);
 
-    UseTrait UseTrait(Position pos, Id name, ClassType host);
+    UseTrait UseTrait(Position pos, Id name);
 }

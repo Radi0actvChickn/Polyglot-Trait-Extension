@@ -19,10 +19,12 @@ import polyglot.types.TypeSystem;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 
-//TODO: finish this class
 public abstract class TraitType_c extends ClassType_c implements TraitType {
     private static final long serialVersionUID = SerialVersionUID.generate();
 
+    /**
+     * Used for deserializing types
+     */
     protected TraitType_c() {
     }
 
@@ -66,8 +68,14 @@ public abstract class TraitType_c extends ClassType_c implements TraitType {
         return TOP_LEVEL;
     };
 
+    /*
+     * (non-Javadoc) Traits cannot be contained within other traits
+     * @see polyglot.types.ClassType_c#container()
+     */
     @Override
-    public abstract TraitType outer();
+    public ReferenceType container() {
+        return null;
+    }
 
     @Override
     public abstract String name();
@@ -99,6 +107,15 @@ public abstract class TraitType_c extends ClassType_c implements TraitType {
 
     public TraitType toTrait() {
         return this;
+    }
+
+    /*
+     * (non-Javadoc) Overrides the superclass method because a trait is not a class
+     * @see polyglot.types.ClassType_c#toClass()
+     */
+    @Override
+    public ClassType toClass() {
+        return null;
     }
 
     @Override
@@ -147,7 +164,7 @@ public abstract class TraitType_c extends ClassType_c implements TraitType {
     };
 
     /*
-     * (non-Javadoc) There can be no superTypes of Traits
+     * (non-Javadoc) There can be no superTypes of Traits (yet...)
      * @see polyglot.types.ClassType_c#superType()
      */
     @Override
@@ -155,15 +172,21 @@ public abstract class TraitType_c extends ClassType_c implements TraitType {
         return null;
     };
 
-    /*
-     * (non-Javadoc) TODO: Check this
-     * @see polyglot.types.ClassType_c#members()
-     */
     @Override
     public List<? extends MemberInstance> members() {
         List<MemberInstance> l = new LinkedList<>();
         l.addAll(methods());
         return l;
+    }
+
+    @Override
+    public boolean hasRequiredMethods() {
+        for (MemberInstance member : members()) {
+            if (member instanceof RequiredMethodInstance) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

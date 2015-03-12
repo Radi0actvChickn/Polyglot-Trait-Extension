@@ -4,6 +4,8 @@ import polyglot.ast.Ext;
 import polyglot.ast.Id;
 import polyglot.ast.Node_c;
 import polyglot.ast.Term;
+import polyglot.ext.trait.types.TraitTypeSystem;
+import polyglot.ext.trait.types.TraitTypeSystem_c;
 import polyglot.types.ClassType;
 import polyglot.types.MemberInstance;
 import polyglot.util.Position;
@@ -20,16 +22,24 @@ public class UseTrait_c extends Node_c implements UseTrait {
     protected MemberInstance mi;
     protected boolean reachable;
     protected SubtypeSet exceptions;
+    private TraitTypeSystem ts = new TraitTypeSystem_c();
 
-    public UseTrait_c(Position pos, Id name, ClassType host) {
-        this(pos, name, host, null);
+    public UseTrait_c(Position pos, Id name) {
+        this(pos, name, null);
     }
 
-    public UseTrait_c(Position pos, Id name, ClassType host, Ext ext) {
+    public UseTrait_c(Position pos, Id name, Ext ext) {
         super(pos, ext);
         assert name != null;
         this.name = name;
-        this.host = host;
+        host = (ClassType) mi.container();
+    }
+
+    public boolean isUsed(ClassType ct) {
+        if (ts.isMember(mi, host)) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -68,6 +78,10 @@ public class UseTrait_c extends Node_c implements UseTrait {
     public Term reachable(boolean reachable) {
         this.reachable = reachable;
         return this;
+    }
+
+    public ClassType host() {
+        return host;
     }
 
 }
