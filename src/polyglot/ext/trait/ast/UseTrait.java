@@ -1,7 +1,17 @@
 package polyglot.ext.trait.ast;
 
-import polyglot.ast.ClassMember;
+import java.util.List;
 
-public interface UseTrait extends ClassMember {
-    //This is only here for clearer reference
+import polyglot.ast.TypeNode;
+import polyglot.types.ClassType;
+import polyglot.types.MethodInstance;
+
+public interface UseTrait extends TypeNode {
+
+    ClassType host();
+
+    List<MethodInstance> providedMethods();
+
+    List<RequiredMethod> requiredMethods();
+
 }

@@ -7,7 +7,6 @@ import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
 import polyglot.visit.PrettyPrinter;
 
-//TODO: finish this class
 public class TraitTypeNode_c extends TypeNode_c {
 
     private static final long serialVersionUID = SerialVersionUID.generate();

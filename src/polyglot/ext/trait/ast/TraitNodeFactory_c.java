@@ -10,6 +10,7 @@ import polyglot.ast.JLang;
 import polyglot.ast.MethodDecl;
 import polyglot.ast.NodeFactory_c;
 import polyglot.ast.TypeNode;
+import polyglot.ext.trait.types.TraitType;
 import polyglot.types.Flags;
 import polyglot.util.Position;
 
@@ -60,8 +61,8 @@ public class TraitNodeFactory_c extends NodeFactory_c implements
     }
 
     @Override
-    public UseTrait UseTrait(Position pos, Id name) {
-        UseTrait n = new UseTrait_c(pos, name);
+    public UseTrait UseTrait(Position pos, TraitType trait) {
+        UseTrait n = new UseTrait_c(pos, trait);
         n = ext(n, extFactory().extUseTrait());
         return n;
     }

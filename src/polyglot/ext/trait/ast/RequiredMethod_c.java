@@ -17,7 +17,7 @@ import polyglot.util.SerialVersionUID;
 public class RequiredMethod_c extends MethodDecl_c implements RequiredMethod {
     private static final long serialVersionUID = SerialVersionUID.generate();
 
-    protected RequiredMethodInstance mi;
+    protected RequiredMethodInstance rmi;
 
     public RequiredMethod_c(Position pos, Flags flags, TypeNode returnType,
             Id name, List<Formal> formals, List<TypeNode> throwTypes) {
@@ -32,17 +32,17 @@ public class RequiredMethod_c extends MethodDecl_c implements RequiredMethod {
     /* - START - Borrowed from superclass to make sure "mi" refers to this.mi and not super.mi */
     @Override
     public boolean isDisambiguated() {
-        return mi != null && mi.isCanonical() && super.isDisambiguated();
+        return rmi != null && rmi.isCanonical() && super.isDisambiguated();
     }
 
     @Override
     public MemberInstance memberInstance() {
-        return mi;
+        return rmi;
     }
 
     @Override
     public MethodInstance methodInstance() {
-        return mi;
+        return rmi;
     }
 
     /*  - END -  Borrowed from superclass to make sure "mi" refers to this.mi and not super.mi */
@@ -53,9 +53,9 @@ public class RequiredMethod_c extends MethodDecl_c implements RequiredMethod {
 
     protected <N extends RequiredMethod_c> N requiredMethodInstance(N n,
             RequiredMethodInstance mi) {
-        if (n.mi == mi) return n;
+        if (n.rmi == mi) return n;
         n = copyIfNeeded(n);
-        n.mi = mi;
+        n.rmi = mi;
         return n;
     }
 

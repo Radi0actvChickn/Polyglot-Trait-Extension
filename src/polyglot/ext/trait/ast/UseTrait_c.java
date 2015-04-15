@@ -1,87 +1,62 @@
 package polyglot.ext.trait.ast;
 
-import polyglot.ast.Ext;
-import polyglot.ast.Id;
-import polyglot.ast.Node_c;
-import polyglot.ast.Term;
-import polyglot.ext.trait.types.TraitTypeSystem;
-import polyglot.ext.trait.types.TraitTypeSystem_c;
+import java.util.ArrayList;
+import java.util.List;
+
+import polyglot.ast.TypeNode_c;
+import polyglot.ext.trait.types.RequiredMethodInstance;
+import polyglot.ext.trait.types.TraitType;
 import polyglot.types.ClassType;
-import polyglot.types.MemberInstance;
+import polyglot.types.MethodInstance;
+import polyglot.util.CodeWriter;
 import polyglot.util.Position;
 import polyglot.util.SerialVersionUID;
-import polyglot.util.SubtypeSet;
+import polyglot.visit.PrettyPrinter;
 
-//TODO: this class
-public class UseTrait_c extends Node_c implements UseTrait {
+public class UseTrait_c extends TypeNode_c implements UseTrait {
 
     private static final long serialVersionUID = SerialVersionUID.generate();
 
-    protected Id name;
-    protected ClassType host;
-    protected MemberInstance mi;
-    protected boolean reachable;
-    protected SubtypeSet exceptions;
-    private TraitTypeSystem ts = new TraitTypeSystem_c();
+    private List<RequiredMethod> requiredMethods;
+    private List<MethodInstance> providedMethods;
+    private ClassType host;
 
-    public UseTrait_c(Position pos, Id name) {
-        this(pos, name, null);
-    }
-
-    public UseTrait_c(Position pos, Id name, Ext ext) {
-        super(pos, ext);
-        assert name != null;
-        this.name = name;
-        host = (ClassType) mi.container();
-    }
-
-    public boolean isUsed(ClassType ct) {
-        if (ts.isMember(mi, host)) {
-            return true;
+    public UseTrait_c(Position pos, TraitType trait) {
+        super(pos);
+        List<RequiredMethod> requiredMethods = new ArrayList<>();
+        List<MethodInstance> providedMethods = new ArrayList<>();
+        for (MethodInstance method : trait.methods()) {
+            if (method instanceof RequiredMethodInstance == false) {
+                providedMethods.add(method);
+            }
         }
-        return false;
+
+        this.requiredMethods = requiredMethods;
+        this.providedMethods = providedMethods;
     }
 
     @Override
-    public MemberInstance memberInstance() {
-        return mi;
+    public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
+
     }
 
-    protected <N extends UseTrait_c> N memberInstance(N n, MemberInstance mi) {
-        if (n.mi == mi) return n;
-        n = copyIfNeeded(n);
-        n.mi = mi;
-        return n;
-    }
-
-    public UseTrait memberInstance(MemberInstance mi) {
-        return memberInstance(this, mi);
+    public void host(ClassType host) {
+        this.host = host;
     }
 
     @Override
-    public boolean reachable() {
-        return reachable;
-    }
-
-    @Override
-    public SubtypeSet exceptions() {
-        return exceptions;
-    }
-
-    @Override
-    public Term exceptions(SubtypeSet exceptions) {
-        this.exceptions = exceptions;
-        return this;
-    }
-
-    @Override
-    public Term reachable(boolean reachable) {
-        this.reachable = reachable;
-        return this;
-    }
-
     public ClassType host() {
         return host;
+    }
+
+    @Override
+    public List<MethodInstance> providedMethods() {
+        return providedMethods;
+    }
+
+    @Override
+    public List<RequiredMethod> requiredMethods() {
+        return requiredMethods;
     }
 
 }

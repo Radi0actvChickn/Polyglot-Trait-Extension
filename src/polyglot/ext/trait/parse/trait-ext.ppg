@@ -1,4 +1,4 @@
-include "java12.cup"
+include "polyglot/ext/jl7/parse/jl7.ppg"
 
 package polyglot.ext.trait.parse;
 
@@ -6,6 +6,7 @@ import java.util.*;
 
 import polyglot.parse.*;
 import polyglot.ext.trait.ast.*;
+import polyglot.ext.trait.types.*;
 import polyglot.ast.*;
 import polyglot.lex.*;
 import polyglot.util.*;
@@ -15,7 +16,7 @@ import polyglot.main.Options;
 
 parser Grm extends polyglot.parse.Grm  {:
 
-  public Grm(Lexer l, TypeSystem t, NodeFactory n, ErrorQueue q) {
+  public Grm(Lexer l, TraitTypeSystem t, TraitNodeFactory n, ErrorQueue q) {
     super(l,t,n,q);
   }
 
@@ -54,7 +55,7 @@ parser Grm extends polyglot.parse.Grm  {:
     else return n.pos;
   }
 
-  public List<LocalDecl> variableDeclarators(TypeNode a, List<VarDeclarator> b, Flags flags)
+  public List<LocalDecl> variableDeclarators(TraitTypeNode a, List<VarDeclarator> b, Flags flags)
     throws Exception
   {
     List<LocalDecl> l = new LinkedList<>();
@@ -71,6 +72,7 @@ terminal REQUIRES, TRAIT, USE;
 
 non terminal required_methods_opt;
 non terminal TraitDecl trait_declaration;
+non terminal TraitType trait;
 non terminal List<RequiredMethod> required_methods;
 non terminal RequiredMethod required_method, required_method_header;
 non terminal List<MethodDecl> provided_methods;
@@ -84,14 +86,16 @@ type_declaration ::= trait_declaration:a
     ;
 
 extend
-class_member_declaration ::= USE:a TRAIT IDENTIFIER:b
-				//Figure out how to reference the host class
-            {: RESULT = parser.nf.UseTrait(parser.pos(a, b), b); :} //will throw an error
+class_member_declaration ::= USE:a TRAIT trait:b
+					//UseTrait
+            {: RESULT = parser.nf.UseTrait(parser.pos(a, b), b); :}
     ;
 
 trait_declaration ::=
+					//TraitDecl
         TRAIT:n IDENTIFIER:b LBRACE:d required_methods_opt:a provided_methods:c RBRACE:e
-            {: RESULT = parser.nf.TraitDecl(parser.pos(n, e), b, a, c); :}
+            {: RESULT = parser.nf.TraitDecl(parser.pos(n, e), 
+            	parser.nf.Id(parser.pos(b), b.getIdentifier()), a, c); :}
     ;
 
 required_methods_opt ::=
